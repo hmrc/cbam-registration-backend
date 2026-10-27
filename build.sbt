@@ -1,7 +1,8 @@
 import uk.gov.hmrc.DefaultBuildSettings
 
+val appName = "cbam-registration-backend"
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "3.3.6"
+ThisBuild / scalaVersion := "3.3.7"
 ThisBuild / scalacOptions += "-Wconf:msg=Flag.*repeatedly:s"
 
 lazy val microservice = Project("cbam-registration-backend", file("."))
@@ -12,6 +13,8 @@ lazy val microservice = Project("cbam-registration-backend", file("."))
     // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
     // suppress warnings in generated routes files
     scalacOptions += "-Wconf:src=routes/.*:s",
+    scalafmtOnCompile := true,
+    PlayKeys.playDefaultPort := 11011
   )
   .settings(CodeCoverageSettings.settings: _*)
 
@@ -20,3 +23,5 @@ lazy val it = project
   .dependsOn(microservice % "test->test")
   .settings(DefaultBuildSettings.itSettings())
   .settings(libraryDependencies ++= AppDependencies.it)
+
+addCommandAlias("runAllChecks", ";clean;compile;scalafmtAll;coverage;test;it/test;coverageReport")

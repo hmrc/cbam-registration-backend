@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cbamregistrationbackend.controllers
+package uk.gov.hmrc.cbamregistrationbackend.testonly.controllers
 
+import org.mongodb.scala.SingleObservableFuture
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.cbamregistrationbackend.repositories.UserAnswersRepository
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
-@Singleton()
-class MicroserviceHelloWorldController @Inject() (
-    cc: ControllerComponents
-) extends BackendController(cc) {
+class TestOnlyController @Inject() (
+    cc: ControllerComponents,
+    userAnswersRepository: UserAnswersRepository
+)(implicit ec: ExecutionContext)
+    extends BackendController(cc) {
 
-  val hello: Action[AnyContent] = Action { implicit request =>
-    Ok("Hello world")
+  def clearAllUserAnswers(): Action[AnyContent] = Action.async { _ =>
+    for {
+      _ <- userAnswersRepository.collection.drop().toFuture()
+    } yield Ok("All user answers cleared")
   }
+
 }

@@ -17,8 +17,8 @@
 package uk.gov.hmrc.cbamregistrationbackend.base
 
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfterEach, OptionValues, TestSuite, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.{BaseOneAppPerSuite, FakeApplicationFactory}
@@ -33,7 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext
 
 trait SpecBase
-    extends AnyFreeSpec
+    extends AnyWordSpec
     with Matchers
     with TryValues
     with DefaultAwaitTimeout

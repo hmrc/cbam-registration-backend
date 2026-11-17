@@ -16,10 +16,16 @@
 
 package uk.gov.hmrc.cbamregistrationbackend.base
 
+import uk.gov.hmrc.cbamregistrationbackend.models.UserAnswers
+
 import java.time.{Clock, Instant, ZoneId}
 
 trait TestData {
 
   val clock: Clock = Clock.fixed(Instant.ofEpochMilli(1718118467838L), ZoneId.of("UTC"))
+
+  val testCredId: String = "cred0"
+
+  def emptyUserAnswers: UserAnswers = UserAnswers(testCredId, lastUpdated = Instant.now(clock))
 
 }

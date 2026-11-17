@@ -56,9 +56,6 @@ class UserAnswersRepository @Inject() (
 
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
-//  private val replaceDontUpsert = ReplaceOptions().upsert(false)
-//  private val replaceUpsert     = ReplaceOptions().upsert(true)
-
   private def byId(id: String) = Filters.equal("_id", id)
 
   def keepAlive(id: String): Future[Boolean] =
@@ -93,15 +90,12 @@ class UserAnswersRepository @Inject() (
       .map(res => if (res.getModifiedCount == 1) UpdateSuccess else UpdateFailure)
   }
 
-  def add(userAnswers: UserAnswers): Future[Boolean] =
+  def add(userAnswers: UserAnswers): Future[UpdateResult] =
     collection
-      .replaceOne(
-        filter = byId(userAnswers.credId),
-        replacement = userAnswers,
-        options = ReplaceOptions().upsert(true)
-      )
+      .insertOne(userAnswers)
       .toFuture()
-      .map(_ => true)
+      .map(_ => UpdateSuccess)
+      .recover(_ => UpdateFailure)
 
   def clear(id: String): Future[Boolean] =
     collection

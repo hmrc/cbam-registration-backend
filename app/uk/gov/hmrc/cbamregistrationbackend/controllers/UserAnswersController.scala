@@ -66,9 +66,13 @@ class UserAnswersController @Inject() (
         lastUpdated = Instant.now(clock)
       )
 
-      userAnswersRepository.add(newUserAnswers).map { _ =>
-        logger.info(s"[UserAnswersController][create] Created user answers for credId $credId")
-        Created
+      userAnswersRepository.add(newUserAnswers).map {
+        case UpdateSuccess =>
+          logger.info(s"[UserAnswersController][create] Created user answers for credId $credId")
+          Created
+        case UpdateFailure =>
+          logger.warn(s"[UserAnswersController][create] Failed to create user answers for credId $credId")
+          InternalServerError
       }
     }
 

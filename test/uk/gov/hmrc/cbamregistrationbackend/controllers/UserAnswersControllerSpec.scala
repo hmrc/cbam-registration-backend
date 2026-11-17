@@ -105,12 +105,22 @@ class UserAnswersControllerSpec extends SpecBase {
   }
 
   ".create" must {
-    "create a fresh user answers for the user and return 201 CREATED" in {
-      when(mockUserAnswersRepository.add(any())).thenReturn(Future.successful(true))
+    "return 201 CREATED when user answers are created" in {
+      when(mockUserAnswersRepository.add(any())).thenReturn(Future.successful(UpdateSuccess))
 
       val result: Future[Result] = controller.create(testCredId)(fakeRequest)
 
       status(result) mustBe CREATED
+
+      verify(mockUserAnswersRepository, times(1)).add(eqTo(emptyUserAnswers))
+    }
+
+    "return 500 INTERNAL_SERVER_ERROR when user answers could not be created" in {
+      when(mockUserAnswersRepository.add(any())).thenReturn(Future.successful(UpdateFailure))
+
+      val result: Future[Result] = controller.create(testCredId)(fakeRequest)
+
+      status(result) mustBe INTERNAL_SERVER_ERROR
 
       verify(mockUserAnswersRepository, times(1)).add(eqTo(emptyUserAnswers))
     }

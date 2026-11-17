@@ -62,20 +62,18 @@ class UserAnswersRepositorySpec
       val addResult   = repository.add(userAnswers).futureValue
       val savedRecord = find(Filters.equal("_id", userAnswers.credId)).futureValue.headOption.value
 
-      addResult   mustEqual true
+      addResult   mustEqual UpdateSuccess
       savedRecord mustEqual userAnswers
     }
 
-    "not fail (upsert) if called twice" in {
+    "fail if user answers already exist for the user" in {
       val newUserAnswers = userAnswers.copy(lastUpdated = instant)
 
-      val addResult1  = repository.add(userAnswers).futureValue
-      val addResult2  = repository.add(newUserAnswers).futureValue
-      val savedRecord = find(Filters.equal("_id", userAnswers.credId)).futureValue.headOption.value
+      val addResult1 = repository.add(userAnswers).futureValue
+      val addResult2 = repository.add(newUserAnswers).futureValue
 
-      addResult1  mustEqual true
-      addResult2  mustEqual true
-      savedRecord mustEqual newUserAnswers
+      addResult1 mustEqual UpdateSuccess
+      addResult2 mustEqual UpdateFailure
     }
   }
 
